@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VisionNest - Patient Dashboard</title>
+    <!-- Bootstrap CSS (ID dynamic loader) -->
+    <link id="bootstrap-link" rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <!-- Custom Premium CSS -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- Inline script to prevent theme/RTL flash -->
+    <script>
+        (function () {
+            const theme = localStorage.getItem('theme') || 'light';
+            const dir = localStorage.getItem('dir') || 'ltr';
+            document.documentElement.setAttribute('data-theme', theme);
+            document.documentElement.setAttribute('dir', dir);
+            document.documentElement.setAttribute('lang', dir === 'rtl' ? 'ar' : 'en');
+
+            const bootstrapLink = document.getElementById('bootstrap-link');
+            if (bootstrapLink) {
+                bootstrapLink.href = dir === 'rtl'
+                    ? 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css'
+                    : 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css';
+            }
+        })();
+
+
+        window.handleImageError = function (imgElement, type) {
+            if (imgElement.dataset.fallbackTriggered) return;
+            imgElement.dataset.fallbackTriggered = "true";
+            const fallbacks = {
+                doctor: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=600&q=80",
+                scan: "https://images.unsplash.com/photo-1581594693702-fbdc51b2763b?auto=format&fit=crop&w=600&q=80",
+                surgery: "https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=600&q=80",
+                eye: "https://images.unsplash.com/photo-1607613009820-a29f7bb81c04?auto=format&fit=crop&w=600&q=80"
+            };
+            imgElement.src = fallbacks[type] || fallbacks.eye;
+            imgElement.onerror = function () {
+                const container = document.createElement('div');
+                container.className = imgElement.className + " d-flex flex-column align-items-center justify-content-center text-center p-3";
+                container.style.width = imgElement.style.width || (imgElement.width ? imgElement.width + 'px' : '100%');
+                container.style.height = imgElement.style.height || (imgElement.height ? imgElement.height + 'px' : '220px');
+                container.style.background = "linear-gradient(135deg, rgba(15,76,129,0.1) 0%, rgba(75,163,199,0.1) 100%)";
+                container.style.border = "1px solid var(--card-border)";
+                container.style.borderRadius = "16px";
+                container.style.color = "var(--text-color)";
+                container.style.display = "inline-flex";
+                let icon = type === 'doctor' ? 'user' : (type === 'surgery' ? 'shield' : 'eye');
+                let text = type === 'doctor' ? 'Medical Specialist' : (type === 'surgery' ? 'Surgical Suite' : 'Clinical Diagnostic');
+                container.innerHTML = `
+                    <i data-lucide="${icon}" style="width: 32px; height: 32px; color: var(--secondary-color); margin-bottom: 8px;"></i>
+                    <span style="font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-color);">${text}</span>
+                    <span style="font-size: 0.7rem; opacity: 0.5; margin-top: 3px; color: var(--text-color);">VisionNest Care</span>
+                `;
+                imgElement.parentNode.replaceChild(container, imgElement);
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+            };
+        };
+
+    </script>
+</head>
+
+<body>
+
+    <div class="dashboard-container">
+
+        <!-- SIDEBAR -->
+        <aside class="dashboard-sidebar">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <a href="index.html" class="d-flex align-items-center text-decoration-none text-color fw-bold gap-2">
+                    <div class="toggle-btn bg-primary text-white border-0 flex-shrink-0"
+                        style="width: 38px; height: 38px;">
+                        <i data-lucide="eye" style="width: 18px; height: 18px;"></i>
+                    </div>
+                    <span class="fs-6 fw-bold sidebar-text">VisionNest</span>
+                </a>
+            </div>
+
+            <!-- Sidebar Navigation Links -->
+            <nav class="flex-grow-1">
+                <a href="#" class="sidebar-nav-item active">
+                    <i data-lucide="layout-dashboard" class="flex-shrink-0"></i>
+                    <span class="sidebar-text">Overview</span>
+                </a>
+                <a href="#appointments" class="sidebar-nav-item">
+                    <i data-lucide="calendar" class="flex-shrink-0"></i>
+                    <span class="sidebar-text">Appointments</span>
+                </a>
+                <a href="#prescriptions" class="sidebar-nav-item">
+                    <i data-lucide="file-spreadsheet" class="flex-shrink-0"></i>
+                    <span class="sidebar-text">Prescriptions</span>
+                </a>
+                <a href="#reports" class="sidebar-nav-item">
+                    <i data-lucide="file-text" class="flex-shrink-0"></i>
+                    <span class="sidebar-text">Reports</span>
+                </a>
+                <a href="#billing" class="sidebar-nav-item">
+                    <i data-lucide="credit-card" class="flex-shrink-0"></i>
+                    <span class="sidebar-text">Billing</span>
+                </a>
+                <a href="index.html" class="sidebar-nav-item">
+                    <i data-lucide="log-out" class="flex-shrink-0"></i>
+                    <span class="sidebar-text">Exit Portal</span>
+                </a>
+            </nav>
+
+            <!-- Mobile/Tablet Toggles (Inside Dashboard Hamburger Sidebar) -->
+            <div class="d-flex d-xl-none align-items-center gap-3 px-3 justify-content-start my-3">
+                <button class="toggle-btn rtl-toggle" aria-label="Toggle RTL Mode">
+                    <i data-lucide="arrow-left-right"></i>
+                </button>
+                <button class="toggle-btn theme-toggle" aria-label="Toggle Dark Mode">
+                    <i data-lucide="moon"></i>
+                </button>
+            </div>
+
+            <!-- Collapse button at the bottom -->
+            <button id="sidebar-collapse-toggle"
+                class="sidebar-nav-item border-0 text-start w-100 mt-auto">
+                <i data-lucide="chevron-left" class="flex-shrink-0"></i>
+                <span class="sidebar-text">Collapse Menu</span>
+            </button>
+        </aside>
+
+        <!-- MAIN MAIN CONTENT PANEL -->
+        <main class="dashboard-main">
+
+            <!-- FLOATING TOPBAR -->
+            <header class="dashboard-topbar">
+                <div class="d-flex align-items-center gap-3">
+                    <!-- Mobile Hamburger -->
+                    <button id="sidebar-toggle" class="toggle-btn d-xl-none" aria-label="Toggle Navigation Sidebar">
+                        <i data-lucide="menu"></i>
+                    </button>
+                    <h5 class="text-color mb-0 fw-bold font-heading">Patient Hub</h5>
+                </div>
+
+                <div class="d-flex align-items-center gap-3">
+                    <!-- RTL Toggle -->
+                    <button id="rtl-toggle" class="toggle-btn d-none d-xl-flex" aria-label="Toggle RTL Mode">
+                        <i data-lucide="arrow-left-right"></i>
+                    </button>
+                    <!-- Dark Mode Toggle -->
+                    <button id="theme-toggle" class="toggle-btn d-none d-xl-flex" aria-label="Toggle Dark Mode">
+                        <i data-lucide="moon"></i>
+                    </button>
+
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="avatar bg-primary text-white rounded-circle d-flex align-items-center justify-content-center"
+                            style="width: 40px; height: 40px; font-weight: bold;">CC</div>
+                        <span class="text-color d-none d-md-inline small">Charles C.</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- MAIN SCROLLABLE CONTENT AREA -->
+            <div class="dashboard-content-area">
+
+                <!-- WELCOME PANEL -->
+                <div class="glass-panel p-4 mb-4"
+                    style="background: linear-gradient(135deg, rgba(15,76,129,0.08) 0%, rgba(75,163,199,0.08) 100%);">
+                    <div class="row align-items-center justify-content-between">
+                        <div class="col-md-8 text-center text-md-start">
+                            <h3 class="text-color font-heading mb-2" style="text-align: inherit;">Welcome Back, Charles!
+                            </h3>
+                            <p class="text-muted mb-0">Your vision recovery is tracking successfully. Your next visual
+                                acuity check-up is in 8 days.</p>
+                        </div>
+                        <div class="col-md-4 text-center text-md-end mt-3 mt-md-0">
+                            <!-- Centered button inside wrapper -->
+                            <div class="centered-btn-wrapper my-0 d-md-inline-flex">
+                                <a href="#quick-book" class="btn-primary-custom"
+                                    style="height: 44px; border-radius: 22px; font-size: 0.85rem;">Request Eye Exam</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ANALYTICS WIDGETS / STATS CARDS -->
+                <div class="row g-4 mb-4">
+                    <!-- Card 1: Next Appointment -->
+                    <div class="col-xl-3 col-md-6">
+                        <div class="glass-panel p-4 h-100 d-flex flex-column justify-content-between">
+                            <div>
+                                <div class="d-flex align-items-center justify-content-between mb-2">
+                                    <span class="text-muted small">Next Appointment</span>
+                                    <i data-lucide="calendar" class="text-secondary-color"></i>
+                                </div>
+                                <h6 class="text-color fw-bold mb-1">June 24, 2026 at 2:30 PM</h6>
+                                <p class="text-muted mb-0 small">Dr. Michael Vance (Laser check)</p>
+                            </div>
+                            <span class="status-badge status-success mt-3 w-100 justify-content-center"><i
+                                    data-lucide="clock"></i> Confirmed</span>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Active Prescriptions -->
+                    <div class="col-xl-3 col-md-6">
+                        <div class="glass-panel p-4 h-100 d-flex flex-column justify-content-between">
+                            <div>
+                                <div class="d-flex align-items-center justify-content-between mb-2">
+                                    <span class="text-muted small">Active Prescriptions</span>
+                                    <i data-lucide="file-spreadsheet" class="text-secondary-color"></i>
+                                </div>
+                                <h6 class="text-color fw-bold mb-1">2 Active Formulas</h6>
+                                <p class="text-muted mb-0 small">Progressive Lenses & Dry Eye Drops</p>
+                            </div>
+                            <span class="status-badge status-warning mt-3 w-100 justify-content-center"><i
+                                    data-lucide="alert-circle"></i> Renewal in 15 days</span>
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Vision Health Index -->
+                    <div class="col-xl-3 col-md-6">
+                        <div class="glass-panel p-4 h-100 d-flex flex-column justify-content-between">
+                            <div>
+                                <div class="d-flex align-items-center justify-content-between mb-2">
+                                    <span class="text-muted small">Vision Health Index</span>
+                                    <i data-lucide="trending-up" class="text-secondary-color"></i>
+                                </div>
+                                <h6 class="text-color fw-bold mb-1">92% Visual Acuity</h6>
+                                <p class="text-muted mb-0 small">Left Eye: 1.2 | Right Eye: 1.0</p>
+                            </div>
+                            <span class="status-badge status-success mt-3 w-100 justify-content-center"><i
+                                    data-lucide="check"></i> +1.2% Improvement</span>
+                        </div>
+                    </div>
+
+                    <!-- Card 4: Messages -->
+                    <div class="col-xl-3 col-md-6">
+                        <div class="glass-panel p-4 h-100 d-flex flex-column justify-content-between">
+                            <div>
+                                <div class="d-flex align-items-center justify-content-between mb-2">
+                                    <span class="text-muted small">Clinic Notifications</span>
+                                    <i data-lucide="message-square" class="text-secondary-color"></i>
+                                </div>
+                                <h6 class="text-color fw-bold mb-1">3 Unread Messages</h6>
+                                <p class="text-muted mb-0 small">Support, Nurse Clara</p>
+                            </div>
+                            <span class="status-badge status-danger mt-3 w-100 justify-content-center"><i
+                                    data-lucide="mail"></i> Priority Action Required</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VISION HISTORY CHART & PATIENT PROFILE -->
+                <div class="row g-4 mb-4">
+                    <!-- Vision History (Chart.js Panel) -->
+                    <div class="col-lg-8">
+                        <div class="glass-panel p-4 h-100">
+                            <h5 class="text-color mb-3 font-heading text-center text-sm-start"
+                                style="text-align: inherit;">Vision Tracking History</h5>
+                            <div class="position-relative" style="height: 300px; width: 100%;">
+                                <canvas id="visionChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Patient Profile Details Card -->
+                    <div class="col-lg-4">
+                        <div class="glass-panel p-4 h-100 d-flex flex-column justify-content-between">
+                            <div>
+                                <h5 class="text-color mb-3 font-heading text-center text-sm-start"
+                                    style="text-align: inherit;">Patient Profile</h5>
+                                <div class="text-center mb-4">
+                                    <div class="avatar bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2"
+                                        style="width: 70px; height: 70px; font-size: 1.5rem; font-weight: bold;">CC
+                                    </div>
+                                    <h5 class="text-color mb-0 font-heading">Charles Carter</h5>
+                                    <span class="text-muted small">Patient ID: #OCT-2026-9810</span>
+                                </div>
+
+                                <div
+                                    class="d-flex justify-content-between py-2 border-bottom border-light text-color small">
+                                    <span>Age / Gender:</span>
+                                    <span class="fw-bold">42 / Male</span>
+                                </div>
+                                <div
+                                    class="d-flex justify-content-between py-2 border-bottom border-light text-color small">
+                                    <span>Primary Doctor:</span>
+                                    <span class="fw-bold">Dr. Michael Vance</span>
+                                </div>
+                                <div class="d-flex justify-content-between py-2 text-color small">
+                                    <span>Blood Group:</span>
+                                    <span class="fw-bold">O Positive</span>
+                                </div>
+                            </div>
+
+                            <!-- Centered button inside wrapper -->
+                            <div class="centered-btn-wrapper my-0">
+                                <a href="contact.html"
+                                    class="btn-outline-custom w-100 justify-content-center text-center"
+                                    style="height: 42px; border-radius: 21px; font-size: 0.85rem;">Edit Profile</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- UPCOMING APPOINTMENTS & PRESCRIPTION RENEWALS -->
+                <div class="row g-4 mb-4">
+                    <!-- Appointments Table Widget -->
+                    <div class="col-lg-7" id="appointments">
+                        <div class="glass-panel p-4 h-100 overflow-hidden">
+                            <h5 class="text-color mb-3 font-heading text-center text-sm-start"
+                                style="text-align: inherit;">Upcoming Appointments</h5>
+                            <div class="table-responsive">
+                                <table class="premium-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Doctor</th>
+                                            <th>Type</th>
+                                            <th>Scheduled Date</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="fw-bold text-color">Dr. Michael Vance</td>
+                                            <td>Femto-LASIK Post-Op</td>
+                                            <td>June 24, 2026</td>
+                                            <td><span class="status-badge status-success">Confirmed</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fw-bold text-color">Dr. Raymond Vance</td>
+                                            <td>Lens Fit Check</td>
+                                            <td>July 15, 2026</td>
+                                            <td><span class="status-badge status-warning">Pending</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Prescription Renewal Card -->
+                    <div class="col-lg-5" id="prescriptions">
+                        <div class="glass-panel p-4 h-100">
+                            <h5 class="text-color mb-3 font-heading text-center text-sm-start"
+                                style="text-align: inherit;">Request Prescription Renewal</h5>
+                            <form id="renewal-form">
+                                <div class="mb-3 text-start">
+                                    <label class="form-label text-color small fw-bold">Select Formula</label>
+                                    <select class="form-select text-color bg-light" required
+                                        style="border-radius: 10px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text-color);">
+                                        <option>Progressive Spherical Lenses (Dr. Raymond Vance)</option>
+                                        <option>Dry Eye Systane Drops (Dr. Fiona Calloway)</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3 text-start">
+                                    <label class="form-label text-color small fw-bold">Preferred Pharmacy
+                                        Address</label>
+                                    <input type="text" class="form-control" placeholder="100 Wellness Ave, CVS Pharmacy"
+                                        required
+                                        style="border-radius: 10px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text-color);">
+                                </div>
+
+                                <!-- Centered submit button inside form wrapper -->
+                                <div class="centered-btn-wrapper my-0">
+                                    <button type="submit" class="btn-primary-custom w-100 justify-content-center">Submit
+                                        Request</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MEDICAL REPORTS & RECENT ACTIVITY -->
+                <div class="row g-4 mb-4">
+                    <!-- Medical Reports Downloadable Table -->
+                    <div class="col-lg-6" id="reports">
+                        <div class="glass-panel p-4 h-100">
+                            <h5 class="text-color mb-3 font-heading text-center text-sm-start"
+                                style="text-align: inherit;">Ophthalmic Medical Reports</h5>
+                            <div class="table-responsive">
+                                <table class="premium-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Report Name</th>
+                                            <th>Generated</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="text-color fw-bold">wavefront_3d_scan.pdf</td>
+                                            <td>June 10, 2026</td>
+                                            <td><button onclick="alert('Downloading wavefront_3d_scan.pdf...')"
+                                                    class="toggle-btn" aria-label="Download Report"><i
+                                                        data-lucide="download"></i></button></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-color fw-bold">retinal_oct_scan.pdf</td>
+                                            <td>April 12, 2026</td>
+                                            <td><button onclick="alert('Downloading retinal_oct_scan.pdf...')"
+                                                    class="toggle-btn" aria-label="Download Report"><i
+                                                        data-lucide="download"></i></button></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity Logs / Notifications -->
+                    <div class="col-lg-6">
+                        <div class="glass-panel p-4 h-100">
+                            <h5 class="text-color mb-3 font-heading text-center text-sm-start"
+                                style="text-align: inherit;">Recent Activity Log</h5>
+                            <div class="d-flex flex-column gap-3">
+                                <div class="d-flex gap-3 align-items-start">
+                                    <div class="toggle-btn bg-success text-white border-0 mt-1 flex-shrink-0"
+                                        style="width: 34px; height: 34px;"><i data-lucide="check"
+                                            style="width: 16px; height: 16px;"></i></div>
+                                    <div>
+                                        <h6 class="text-color mb-1 small fw-bold">Invoice Paid successfully</h6>
+                                        <p class="text-muted mb-0" style="font-size: 0.75rem;">June 10, 2026 at 11:32 AM
+                                            - Vision Plan standard subscription</p>
+                                    </div>
+                                </div>
+                                <div class="d-flex gap-3 align-items-start">
+                                    <div class="toggle-btn bg-primary text-white border-0 mt-1 flex-shrink-0"
+                                        style="width: 34px; height: 34px;"><i data-lucide="file-text"
+                                            style="width: 16px; height: 16px;"></i></div>
+                                    <div>
+                                        <h6 class="text-color mb-1 small fw-bold">OCT Retina scan uploaded</h6>
+                                        <p class="text-muted mb-0" style="font-size: 0.75rem;">April 12, 2026 at 4:15 PM
+                                            - Processed by technician Sean Miller</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BILLING SUMMARY & QUICK BOOKING FORM -->
+                <div class="row g-4" id="billing">
+                    <!-- Billing Summary -->
+                    <div class="col-lg-6">
+                        <div class="glass-panel p-4 h-100 d-flex flex-column justify-content-between">
+                            <div>
+                                <h5 class="text-color mb-3 font-heading text-center text-sm-start"
+                                    style="text-align: inherit;">Billing Summary</h5>
+                                <div class="glass-panel p-3 mb-3 d-flex align-items-center justify-content-between"
+                                    style="background: rgba(15,76,129,0.05); border: none;">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="toggle-btn bg-primary text-white border-0"><i
+                                                data-lucide="credit-card"></i></div>
+                                        <div>
+                                            <h6 class="text-color mb-0">Visa ending in •••• 4242</h6>
+                                            <p class="text-muted mb-0 small">Expires 09/28</p>
+                                        </div>
+                                    </div>
+                                    <span class="badge bg-secondary text-white">Primary</span>
+                                </div>
+                            </div>
+
+                            <!-- Centered button inside wrapper -->
+                            <div class="centered-btn-wrapper my-0">
+                                <button onclick="alert('Proceeding to stripe checkout billing settings...')"
+                                    class="btn-primary-custom w-100 justify-content-center">Manage Payment
+                                    Methods</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Booking widget inside dashboard -->
+                    <div class="col-lg-6" id="quick-book">
+                        <div class="glass-panel p-4 h-100" id="quick-book-widget">
+                            <h5 class="text-color mb-3 font-heading text-center text-sm-start"
+                                style="text-align: inherit;">Quick Slot Selection</h5>
+                            <form id="quick-book-form">
+                                <div class="row g-3">
+                                    <div class="col-md-6 text-start">
+                                        <label class="form-label text-color small fw-bold">Select Date</label>
+                                        <input type="date" class="form-control" required
+                                            style="border-radius: 10px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text-color);">
+                                    </div>
+                                    <div class="col-md-6 text-start">
+                                        <label class="form-label text-color small fw-bold">Select Time Slot</label>
+                                        <select class="form-select" required
+                                            style="border-radius: 10px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text-color);">
+                                            <option>Morning (9:00 AM - 12:00 PM)</option>
+                                            <option>Afternoon (1:00 PM - 5:00 PM)</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Centered button inside form wrapper -->
+                                <div class="centered-btn-wrapper mt-3 mb-0">
+                                    <button type="submit"
+                                        class="btn-primary-custom w-100 justify-content-center">Request Booking
+                                        Slot</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+
+    </div>
+
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Chart.js Library CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom theme & layout script -->
+    <script src="js/theme.js"></script>
+    <!-- Dashboard interaction chart script -->
+    <script src="js/dashboard.js"></script>
+</body>
+
+</html>

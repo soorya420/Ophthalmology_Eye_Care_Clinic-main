@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VisionNest - About Us</title>
+    <!-- Bootstrap CSS (ID dynamic loader) -->
+    <link id="bootstrap-link" rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <!-- AOS Scroll Animation -->
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css">
+    <!-- Custom Premium CSS -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- Inline script to prevent theme/RTL flash -->
+    <script>
+        (function () {
+            const theme = localStorage.getItem('theme') || 'light';
+            const dir = localStorage.getItem('dir') || 'ltr';
+            document.documentElement.setAttribute('data-theme', theme);
+            document.documentElement.setAttribute('dir', dir);
+            document.documentElement.setAttribute('lang', dir === 'rtl' ? 'ar' : 'en');
+
+            const bootstrapLink = document.getElementById('bootstrap-link');
+            if (bootstrapLink) {
+                bootstrapLink.href = dir === 'rtl'
+                    ? 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css'
+                    : 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css';
+            }
+        })();
+
+
+        window.handleImageError = function (imgElement, type) {
+            if (imgElement.dataset.fallbackTriggered) return;
+            imgElement.dataset.fallbackTriggered = "true";
+            const fallbacks = {
+                doctor: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=600&q=80",
+                scan: "https://images.unsplash.com/photo-1581594693702-fbdc51b2763b?auto=format&fit=crop&w=600&q=80",
+                surgery: "https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=600&q=80",
+                eye: "https://images.unsplash.com/photo-1607613009820-a29f7bb81c04?auto=format&fit=crop&w=600&q=80"
+            };
+            imgElement.src = fallbacks[type] || fallbacks.eye;
+            imgElement.onerror = function () {
+                const container = document.createElement('div');
+                container.className = imgElement.className + " d-flex flex-column align-items-center justify-content-center text-center p-3";
+                container.style.width = imgElement.style.width || (imgElement.width ? imgElement.width + 'px' : '100%');
+                container.style.height = imgElement.style.height || (imgElement.height ? imgElement.height + 'px' : '220px');
+                container.style.background = "linear-gradient(135deg, rgba(15,76,129,0.1) 0%, rgba(75,163,199,0.1) 100%)";
+                container.style.border = "1px solid var(--card-border)";
+                container.style.borderRadius = "16px";
+                container.style.color = "var(--text-color)";
+                container.style.display = "inline-flex";
+                let icon = type === 'doctor' ? 'user' : (type === 'surgery' ? 'shield' : 'eye');
+                let text = type === 'doctor' ? 'Medical Specialist' : (type === 'surgery' ? 'Surgical Suite' : 'Clinical Diagnostic');
+                container.innerHTML = `
+                    <i data-lucide="${icon}" style="width: 32px; height: 32px; color: var(--secondary-color); margin-bottom: 8px;"></i>
+                    <span style="font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-color);">${text}</span>
+                    <span style="font-size: 0.7rem; opacity: 0.5; margin-top: 3px; color: var(--text-color);">VisionNest Care</span>
+                `;
+                imgElement.parentNode.replaceChild(container, imgElement);
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+            };
+        };
+
+    </script>
+</head>
+
+<body>
+
+    <!-- STICKY NAVBAR -->
+    <nav class="sticky-navbar">
+        <div class="d-flex align-items-center justify-content-between w-100">
+            <!-- Brand / Logo -->
+            <a href="index.html" class="d-flex align-items-center text-decoration-none text-dark fw-bold gap-2">
+                <div class="toggle-btn bg-primary text-white border-0">
+                    <i data-lucide="eye"></i>
+                </div>
+                <span class="fs-5 fw-bold text-color font-heading">VisionNest</span>
+            </a>
+
+            <!-- Navigation Links -->
+            <div class="d-none d-xl-flex align-items-center gap-2">
+                <a href="index.html" class="nav-link-custom">Home 1</a>
+                <a href="home2.html" class="nav-link-custom">Home 2</a>
+                <a href="services.html" class="nav-link-custom">Services</a>
+                <a href="doctors.html" class="nav-link-custom">Doctors</a>
+                <a href="pricing.html" class="nav-link-custom">Pricing</a>
+                <a href="about.html" class="nav-link-custom active">About</a>
+                <a href="contact.html" class="nav-link-custom">Contact</a>
+            </div>
+
+            <!-- Controls and CTA -->
+            <div class="d-flex align-items-center gap-3">
+                <!-- RTL Toggle -->
+                <button id="rtl-toggle" class="toggle-btn d-none d-xl-flex" aria-label="Toggle RTL Mode">
+                    <i data-lucide="arrow-left-right"></i>
+                </button>
+                <!-- Dark Mode Toggle -->
+                <button id="theme-toggle" class="toggle-btn d-none d-xl-flex" aria-label="Toggle Dark Mode">
+                    <i data-lucide="moon"></i>
+                </button>
+                <!-- Login Icon -->
+                <a href="login.html" class="toggle-btn d-none d-xl-flex" title="Login" aria-label="Login">
+                    <i data-lucide="log-in"></i>
+                </a>
+                <!-- Dashboard Icon -->
+                <a href="dashboard.html" class="toggle-btn d-none d-xl-flex" title="Dashboard" aria-label="Dashboard">
+                    <i data-lucide="layout-dashboard"></i>
+                </a>
+
+                <!-- Mobile Navigation Trigger -->
+                <button class="toggle-btn d-xl-none" type="button" data-bs-toggle="offcanvas"
+                    data-bs-target="#mobileMenu" aria-controls="mobileMenu">
+                    <i data-lucide="menu"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Navigation Menu Drawer -->
+    <div class="offcanvas offcanvas-end glass-panel" tabindex="-1" id="mobileMenu" aria-labelledby="mobileMenuLabel"
+        style="background: var(--bg-color); max-width: 300px; border-radius: 0;">
+        <div class="offcanvas-header border-bottom border-light">
+            <h5 class="offcanvas-title text-color font-heading" id="mobileMenuLabel">Menu</h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"
+                style="filter: var(--text-color) === '#FFFFFF' ? 'invert(1)' : 'none';"></button>
+        </div>
+        <div class="offcanvas-body d-flex flex-column gap-3">
+            <a href="index.html" class="nav-link-custom">Home 1</a>
+            <a href="home2.html" class="nav-link-custom">Home 2</a>
+            <a href="services.html" class="nav-link-custom">Services</a>
+            <a href="doctors.html" class="nav-link-custom">Doctors</a>
+            <a href="pricing.html" class="nav-link-custom">Pricing</a>
+            <a href="about.html" class="nav-link-custom active">About</a>
+            <a href="contact.html" class="nav-link-custom">Contact</a>
+
+            <hr class="text-color opacity-25 my-1">
+            <!-- Mobile Utility Controls -->
+            <div class="d-flex align-items-center justify-content-around gap-2 my-2">
+                <!-- RTL Toggle Mobile -->
+                <button class="toggle-btn rtl-toggle" aria-label="Toggle RTL Mode">
+                    <i data-lucide="arrow-left-right"></i>
+                </button>
+                <!-- Dark Mode Toggle Mobile -->
+                <button class="toggle-btn theme-toggle" aria-label="Toggle Dark Mode">
+                    <i data-lucide="moon"></i>
+                </button>
+                <!-- Login Icon Mobile -->
+                <a href="login.html" class="toggle-btn" title="Login" aria-label="Login">
+                    <i data-lucide="log-in"></i>
+                </a>
+                <!-- Dashboard Icon Mobile -->
+                <a href="dashboard.html" class="toggle-btn" title="Dashboard" aria-label="Dashboard">
+                    <i data-lucide="layout-dashboard"></i>
+                </a>
+            </div>
+
+            <hr class="text-color opacity-25 my-1">
+            <a href="contact.html" class="btn-outline-custom w-100 text-center">Contact Us</a>
+        </div>
+    </div>
+
+    <!-- HERO SECTION -->
+    <section class="hero-section text-center">
+        <div class="hero-bg-shapes">
+            <div class="hero-shape shape-1"></div>
+        </div>
+        <div class="container hero-content">
+            <span class="hero-badge"><i data-lucide="info"></i> Shaping The Future of Visual Care</span>
+            <h1 class="hero-title text-center text-color">Clinic Story & Philosophy</h1>
+            <p class="hero-subtitle text-center text-muted">A look at our clinical milestones, technological
+                achievements, and patient-centered core values.</p>
+
+            <div class="centered-btn-wrapper">
+                <a href="#story" class="btn-primary-custom">Our Story</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- CLINIC STORY & COLLAGE -->
+    <section id="story" style="background: var(--bg-color);">
+        <div class="container">
+            <div class="row align-items-center g-5">
+                <div class="col-lg-6" data-aos="fade-right">
+                    <span class="section-tag text-start">Since 2012</span>
+                    <h2 class="text-color mb-4" style="text-align: inherit;">Decades of Eye Clinical Innovation</h2>
+                    <p class="text-muted">Founded by Dr. Michael Vance, the clinic began as a small vision research
+                        unit. Over the years, we integrated wave-front robotics and digital diagnostic dashboards,
+                        leading ophthalmology practices in the region.</p>
+                    <p class="text-muted">Today, our board-certified surgeons collaborate with global healthcare
+                        foundations to refine non-invasive laser techniques, reducing corneal flap recovery times to
+                        under 24 hours.</p>
+                </div>
+                <div class="col-lg-6" data-aos="fade-left">
+                    <!-- FLOATING COLLAGE -->
+                    <div class="position-relative" style="height: 380px;">
+                        <img src="https://tse4.mm.bing.net/th/id/OIP.OUgM9QYy-bD2H7d3TrEvxQHaDy?w=1564&h=799&rs=1&pid=ImgDetMain&o=7&rm=3"
+                            onerror="handleImageError(this, 'scan')" alt="Clinic Lobby"
+                            class="glass-panel position-absolute rounded-3 shadow"
+                            style="width: 200px; height: 180px; object-fit: cover; top: 0; left: 0; z-index: 5;"
+                            loading="lazy">
+                        <img src="https://api.army.mil/e2/c/images/2017/01/04/461770/max1200.jpg"
+                            onerror="handleImageError(this, 'scan')" alt="Diagnostics Lab"
+                            class="glass-panel position-absolute rounded-3 shadow floating-element"
+                            style="width: 220px; height: 160px; object-fit: cover; top: 40px; right: 20px; z-index: 10; animation-delay: 1s;"
+                            loading="lazy">
+                        <img src="https://tse3.mm.bing.net/th/id/OIP.NE_gAw3vqaqfzOsgMzY3DgHaE8?rs=1&pid=ImgDetMain&o=7&rm=3"
+                            onerror="handleImageError(this, 'scan')" alt="Retinal Examination"
+                            class="glass-panel position-absolute rounded-3 shadow"
+                            style="width: 180px; height: 160px; object-fit: cover; bottom: 10px; left: 60px; z-index: 8;"
+                            loading="lazy">
+                        <img src="https://media.istockphoto.com/id/1310419393/photo/senior-man-at-ophthalmology-treatment.jpg?s=612x612&w=0&k=20&c=IzO8rRmZVNr1YIAnQOK3q-YQ934nrW8aNT9DWjzC0E8="
+                            onerror="handleImageError(this, 'scan')" alt="Patient Care"
+                            class="glass-panel position-absolute rounded-3 shadow floating-element"
+                            style="width: 160px; height: 130px; object-fit: cover; bottom: -20px; right: 0; z-index: 12;"
+                            loading="lazy">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MISSION, VISION, VALUES -->
+    <section class="philosophies-section" style="background: var(--bg-offset);">
+        <div class="container text-center">
+            <span class="section-tag d-block">Core Philosophies</span>
+            <h2 class="section-title text-center text-color">Mission, Vision & Values</h2>
+
+            <div class="row g-4 justify-content-center">
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="glass-panel p-4 h-100">
+                        <div class="toggle-btn bg-primary text-white border-0 mx-auto mb-3"><i data-lucide="target"></i>
+                        </div>
+                        <h4 class="text-color">Our Mission</h4>
+                        <p class="text-muted small mb-0">To deliver clinical eye care that pairs robotic precision with
+                            patient comfort, ensuring optimal vision restoration.</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="glass-panel p-4 h-100">
+                        <div class="toggle-btn bg-primary text-white border-0 mx-auto mb-3"><i data-lucide="eye"></i>
+                        </div>
+                        <h4 class="text-color">Our Vision</h4>
+                        <p class="text-muted small mb-0">To lead clinical ophthalmology by engineering AI-guided
+                            diagnostic workflows that resolve visual impairment globally.</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+                    <div class="glass-panel p-4 h-100">
+                        <div class="toggle-btn bg-primary text-white border-0 mx-auto mb-3"><i data-lucide="heart"></i>
+                        </div>
+                        <h4 class="text-color">Core Values</h4>
+                        <p class="text-muted small mb-0">Integrity, patient priority, zero wait-time schedules, and
+                            continuous research on ocular technologies.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TIMELINE OF MILESTONES -->
+    <section class="milestone-timeline-section">
+        <div class="container">
+            <span class="section-tag d-block text-center">Historical Path</span>
+            <h2 class="section-title text-center text-color">Clinical Timeline</h2>
+
+            <div class="modern-timeline">
+                <div class="timeline-item left" data-aos="fade-right">
+                    <div class="timeline-content glass-panel">
+                        <span class="text-secondary-color fw-bold">2012</span>
+                        <h4 class="text-color">Clinic Inception</h4>
+                        <p class="text-muted mb-0">Dr. Vance establishes the research unit with a focus on early
+                            glaucoma nerve path testing.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item right" data-aos="fade-left">
+                    <div class="timeline-content glass-panel">
+                        <span class="text-secondary-color fw-bold">2018</span>
+                        <h4 class="text-color">Wavefront Suite Integration</h4>
+                        <p class="text-muted mb-0">Integrating our femtosecond lasers to support completely blade-free
+                            vision corrections.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item left" data-aos="fade-right">
+                    <div class="timeline-content glass-panel">
+                        <span class="text-secondary-color fw-bold">2022</span>
+                        <h4 class="text-color">50K Patients Milestone</h4>
+                        <p class="text-muted mb-0">Providing validated corneal corrections and visual rehabilitation to
+                            patients across regions.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item right" data-aos="fade-left">
+                    <div class="timeline-content glass-panel">
+                        <span class="text-secondary-color fw-bold">2026</span>
+                        <h4 class="text-color">Dynamic Patient Portal</h4>
+                        <p class="text-muted mb-0">Launching interactive client health dashboards with home vision
+                            tracker updates.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CERTIFICATIONS & TECHNOLOGY & PATIENT CARE (STATS BLOCK) -->
+    <section class="stats-tech-section" style="background: var(--bg-offset);">
+        <div class="container text-center">
+            <span class="section-tag d-block">Clinical Standards</span>
+            <h2 class="section-title text-center text-color">Technology & Care Standards</h2>
+
+            <div class="row align-items-center g-5 justify-content-between text-start text-lg-start">
+                <div class="col-lg-5" data-aos="fade-right">
+                    <h4 class="text-color">Patient-Centered Ophthalmic Care</h4>
+                    <p class="text-muted">We maintain rigorous ISO 9001:2015 credentials. By combining advanced laser
+                        calibrations with specialized nurse support, we ensure that every client undergoes surgeries
+                        with total comfort.</p>
+
+                    <div class="d-flex align-items-center gap-3 mt-4">
+                        <div class="toggle-btn bg-success text-white border-0"><i data-lucide="shield"></i></div>
+                        <div>
+                            <h6 class="mb-0 text-color">Certified Diagnostic Protocols</h6>
+                            <p class="mb-0 text-muted small">Validated yearly by international healthcare commissioners.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6" data-aos="fade-left">
+                    <div class="row g-4">
+                        <div class="col-6">
+                            <div class="glass-panel p-4 text-center">
+                                <h3 class="metric-value text-primary-color">99.8%</h3>
+                                <p class="text-muted mb-0 small">Patient Trust Index</p>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="glass-panel p-4 text-center">
+                                <h3 class="metric-value text-primary-color">100%</h3>
+                                <p class="text-muted mb-0 small">Blade-free LASIK</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="centered-btn-wrapper mt-5">
+                <a href="contact.html" class="btn-primary-custom">Contact Our Specialists</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- VIRTUAL FACILITY SHOWCASE -->
+    <section class="facility-showcase-section" style="background: var(--bg-color); padding: 80px 0;">
+        <div class="container">
+            <span class="section-tag d-block text-center">Inside Our Clinic</span>
+            <h2 class="section-title text-center text-color">Our World-Class Facilities</h2>
+
+            <div class="row g-4 mt-2 justify-content-center">
+                <!-- Facility 1 -->
+                <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="glass-panel p-3 h-100 d-flex flex-column">
+                        <div class="overflow-hidden rounded-4 mb-3" style="height: 220px;">
+                            <img src="IMAGE/facility_surgical_suite.png" onerror="handleImageError(this, 'surgery')"
+                                alt="WaveLight Surgical Suite" class="w-100 h-100"
+                                style="object-fit: cover; transition: transform 0.4s ease; cursor: zoom-in;"
+                                onmouseover="this.style.transform='scale(1.06)'"
+                                onmouseout="this.style.transform='scale(1)'">
+                        </div>
+                        <h5 class="text-color fw-bold px-2 mb-2">WaveLight Surgical Suite</h5>
+                        <p class="text-muted small px-2 mb-0">Our clean-room surgery center features the elite WaveLight
+                            Femtosecond laser suite. It maintains active HEPA air filtration and stable temperature
+                            metrics to ensure total safety and micron precision calibration.</p>
+                    </div>
+                </div>
+
+                <!-- Facility 2 -->
+                <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="glass-panel p-3 h-100 d-flex flex-column">
+                        <div class="overflow-hidden rounded-4 mb-3" style="height: 220px;">
+                            <img src="IMAGE/facility_diagnostics.png" onerror="handleImageError(this, 'scan')"
+                                alt="Advanced Diagnostics Wing" class="w-100 h-100"
+                                style="object-fit: cover; transition: transform 0.4s ease; cursor: zoom-in;"
+                                onmouseover="this.style.transform='scale(1.06)'"
+                                onmouseout="this.style.transform='scale(1)'">
+                        </div>
+                        <h5 class="text-color fw-bold px-2 mb-2">Advanced Diagnostics Wing</h5>
+                        <p class="text-muted small px-2 mb-0">Equipped with 3D corneal topographers, high-res optical
+                            coherence tomography (OCT) scanners, and digital refractors. Allows quick, drop-free mapping
+                            of cell structures and fluid flow metrics.</p>
+                    </div>
+                </div>
+
+                <!-- Facility 3 -->
+                <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="300">
+                    <div class="glass-panel p-3 h-100 d-flex flex-column">
+                        <div class="overflow-hidden rounded-4 mb-3" style="height: 220px;">
+                            <img src="IMAGE/facility_boutique.png" onerror="handleImageError(this, 'eye')"
+                                alt="Designer Optical Boutique" class="w-100 h-100"
+                                style="object-fit: cover; transition: transform 0.4s ease; cursor: zoom-in;"
+                                onmouseover="this.style.transform='scale(1.06)'"
+                                onmouseout="this.style.transform='scale(1)'">
+                        </div>
+                        <h5 class="text-color fw-bold px-2 mb-2">Designer Optical Boutique</h5>
+                        <p class="text-muted small px-2 mb-0">Our professional boutique showcases handpicked European
+                            designer frames, custom progressive lenses, and computer blue-light filters, with specialist
+                            opticians providing on-site fittings.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="premium-footer">
+        <div class="container">
+            <div class="row g-5">
+                <div class="col-lg-4 col-md-6">
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <div class="toggle-btn bg-primary text-white border-0">
+                            <i data-lucide="eye"></i>
+                        </div>
+                        <span class="fs-5 fw-bold text-color font-heading">VisionNest</span>
+                    </div>
+                    <p class="text-muted">Defining visual clarity and premium eyecare in 2026. Empowering eyes across
+                        the region with technology and clinical care.</p>
+                    <div class="footer-social-links">
+                        <a href="https://twitter.com" target="_blank" class="twitter" aria-label="Twitter"><i data-lucide="twitter"></i></a>
+                        <a href="https://instagram.com" target="_blank" class="instagram" aria-label="Instagram"><i data-lucide="instagram"></i></a>
+                        <a href="https://linkedin.com" target="_blank" class="linkedin" aria-label="LinkedIn"><i data-lucide="linkedin"></i></a>
+                    </div>
+                </div>
+
+                <div class="col-lg-2 col-md-6">
+                    <h6 class="text-color mb-3 font-heading">Quick Links</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="index.html" class="footer-link">Home 1</a></li>
+                        <li><a href="home2.html" class="footer-link">Home 2</a></li>
+                        <li><a href="pricing.html" class="footer-link">Pricing Plans</a></li>
+                        <li><a href="about.html" class="footer-link">About Clinic</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <h6 class="text-color mb-3 font-heading">Services</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="services.html" class="footer-link">Eye Diagnostics</a></li>
+                        <li><a href="services.html" class="footer-link">Cataract Correction</a></li>
+                        <li><a href="services.html" class="footer-link">Retina Management</a></li>
+                        <li><a href="services.html" class="footer-link">Pediatric Care</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <h6 class="text-color mb-3 font-heading">Stay Connected</h6>
+                    <p class="text-muted small">Subscribe to our monthly Ophthalmology Digest for expert advice and tech
+                        updates.</p>
+                    <form class="d-flex gap-2">
+                        <input type="email" class="form-control" placeholder="Your email..."
+                            style="border-radius: 20px; border: 1px solid var(--card-border); background: var(--bg-color); color: var(--text-color);">
+                        <button type="submit" class="toggle-btn" aria-label="Subscribe"><i
+                                data-lucide="arrow-right"></i></button>
+                    </form>
+                </div>
+            </div>
+
+            <hr class="text-color opacity-10 my-4">
+
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+                <span class="text-muted small">&copy; 2026 VisionNest. All rights reserved.</span>
+                <div class="d-flex gap-3">
+                    <a href="index.html" class="text-muted text-decoration-none small">Privacy Policy</a>
+                    <a href="index.html" class="text-muted text-decoration-none small">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <!-- AOS Animation JS -->
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <!-- Custom theme script -->
+    <script src="js/theme.js"></script>
+
+    <script>
+        AOS.init({
+            once: true,
+            duration: 800
+        });
+    </script>
+</body>
+
+</html>
