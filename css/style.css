@@ -210,6 +210,12 @@ h1 {
     background-color: var(--badge-bg);
 }
 
+.nav-link-custom.active {
+    color: var(--primary-color) !important;
+    background-color: var(--badge-bg) !important;
+    font-weight: 700;
+}
+
 /* Dark Mode and RTL Toggle Buttons */
 .toggle-btn {
     width: 42px;
@@ -1080,5 +1086,7 @@ textarea.form-control-custom {
     color: #FFFFFF !important;
 }
 
-
-
+[data-theme="dark"] .nav-link-custom.active {
+    color: var(--secondary-color) !important;
+    background-color: var(--badge-bg) !important;
+}
