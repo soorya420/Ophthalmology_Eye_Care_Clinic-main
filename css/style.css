@@ -1159,3 +1159,21 @@ textarea.form-control-custom {
         padding: 20px 10px !important;
     }
 }
+
+/* Legible Booking Form inside Dark Mode (always-white card layout) */
+.booking-card h4,
+.booking-card label {
+    color: #1A1A1A !important;
+}
+
+[data-theme="dark"] .booking-card input,
+[data-theme="dark"] .booking-card select {
+    background-color: #FFFFFF !important;
+    color: #1A1A1A !important;
+    border-color: #CED4DA !important;
+}
+
+[data-theme="dark"] .booking-card input::placeholder {
+    color: #6C757D !important;
+    opacity: 0.7 !important;
+}
