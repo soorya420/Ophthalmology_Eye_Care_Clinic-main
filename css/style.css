@@ -110,6 +110,12 @@ h1 {
     text-decoration: none;
 }
 
+.btn-primary-custom:hover {
+    background-color: var(--secondary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px var(--glow-color);
+}
+
 .btn-primary-custom:active {
     transform: translateY(0);
 }
@@ -130,6 +136,12 @@ h1 {
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     cursor: pointer;
     text-decoration: none;
+}
+
+.btn-outline-custom:hover {
+    background-color: var(--primary-color);
+    color: #FFFFFF !important;
+    transform: translateY(-2px);
 }
 
 .btn-outline-custom:active {
@@ -217,6 +229,11 @@ h1 {
     color: var(--text-color);
     transition: all 0.2s ease;
     cursor: pointer;
+}
+
+.toggle-btn:hover {
+    background: var(--primary-color);
+    color: #FFFFFF;
 }
 
 /* Hero Section Styles */
