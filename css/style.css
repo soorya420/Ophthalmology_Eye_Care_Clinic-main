@@ -787,9 +787,10 @@ textarea.form-control-custom {
 
 .metric-value {
     font-family: 'Manrope', sans-serif;
-    font-size: 2.2rem;
+    font-size: clamp(1.6rem, 5vw, 2.2rem);
     font-weight: 800;
     margin: 8px 0;
+    white-space: nowrap;
 }
 
 /* Table Style */
@@ -1100,4 +1101,61 @@ textarea.form-control-custom {
 [data-theme="dark"] ::placeholder {
     color: rgba(255, 255, 255, 0.5) !important;
     opacity: 1 !important;
+}
+
+/* Mobile Drawer Premium Alignment & Styles */
+.offcanvas {
+    background: var(--bg-color) !important;
+}
+
+.offcanvas-header {
+    padding: 20px 24px !important;
+    border-bottom: 1px solid var(--card-border) !important;
+}
+
+.offcanvas-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.offcanvas-body {
+    padding: 20px 24px !important;
+}
+
+.offcanvas-body .nav-link-custom {
+    padding: 10px 0 !important;
+    border-radius: 0;
+    border-bottom: 1px solid rgba(15, 76, 129, 0.05);
+}
+
+.offcanvas-body .nav-link-custom:last-of-type {
+    border-bottom: none;
+}
+
+.offcanvas-body .nav-link-custom.active {
+    background-color: transparent !important;
+    color: var(--primary-color) !important;
+    font-weight: 700;
+}
+
+[data-theme="dark"] .offcanvas-body .nav-link-custom.active {
+    color: var(--secondary-color) !important;
+}
+
+[data-theme="dark"] .offcanvas-body .nav-link-custom {
+    border-bottom-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Close Button Dark Mode Visibility */
+[data-theme="dark"] .btn-close {
+    filter: invert(1) !important;
+    opacity: 0.8;
+}
+
+/* Responsive Metric Card Padding on Small Mobile Screens */
+@media (max-width: 575.98px) {
+    .statistics-section .glass-panel,
+    .stats-tech-section .glass-panel {
+        padding: 20px 10px !important;
+    }
 }
