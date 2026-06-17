@@ -1332,24 +1332,27 @@ textarea.form-control-custom {
     }
 }
 
-/* Prevent scrolling on login/signup pages for normal screen heights */
-@media (min-height: 650px) {
-    body.login-page-body,
-    body.signup-page-body {
-        overflow: hidden !important;
-        height: 100vh !important;
-    }
+/* Prevent scrolling on login/signup pages */
+body.login-page-body,
+body.signup-page-body {
+    overflow: hidden !important;
+    height: 100vh !important;
 }
 
 /* Auth Pages Link Styling: enforce color in both modes and disable hover effect */
 .signup-link,
-.login-link {
+.login-link,
+[data-theme="dark"] .signup-link,
+[data-theme="dark"] .login-link {
     color: var(--secondary-color) !important;
+    text-decoration: none !important;
     transition: none !important;
 }
 
 .signup-link:hover,
-.login-link:hover {
+.login-link:hover,
+[data-theme="dark"] .signup-link:hover,
+[data-theme="dark"] .login-link:hover {
     text-decoration: none !important;
     color: var(--secondary-color) !important;
     opacity: 1 !important;
@@ -1357,15 +1360,23 @@ textarea.form-control-custom {
 
 /* Spacing and position adjustments for auth pages on mobile screen sizes */
 @media (max-width: 767.98px) {
-    .auth-card {
-        margin-top: 50px !important;
+    body.login-page-body,
+    body.signup-page-body {
+        flex-direction: column !important;
+        justify-content: center !important;
     }
-}
-
-@media (max-width: 575.98px) {
     .auth-toggles {
-        top: 12px !important;
-        right: 12px !important;
+        position: relative !important;
+        top: auto !important;
+        right: auto !important;
+        margin-bottom: 16px !important;
+        align-self: center !important;
+        width: 100% !important;
+        max-width: 420px !important;
+        justify-content: flex-end !important;
+    }
+    .auth-card {
+        margin-top: 0 !important;
     }
 }
 
@@ -1379,7 +1390,19 @@ textarea.form-control-custom {
     border-color: #333333 !important;
 }
 
-[data-theme="dark"] .form-control::placeholder {
-    color: rgba(255, 255, 255, 0.5) !important;
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder,
+[data-theme="dark"] .form-control::placeholder,
+[data-theme="dark"] ::placeholder {
+    color: rgba(255, 255, 255, 0.6) !important;
+    opacity: 1 !important;
 }
+
+/* Sidebar collapse toggle background transparent in all modes */
+#sidebar-collapse-toggle {
+    background: transparent !important;
+    background-color: transparent !important;
+    border: none !important;
+}
+
 
