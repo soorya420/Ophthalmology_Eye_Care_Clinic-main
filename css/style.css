@@ -1064,12 +1064,14 @@ textarea.form-control-custom {
 [data-theme="dark"] h6,
 [data-theme="dark"] p,
 [data-theme="dark"] span,
-[data-theme="dark"] a:not(.btn-primary-custom):not(.btn-outline-custom),
+[data-theme="dark"] a:not(.btn-primary-custom):not(.btn-outline-custom):not(.signup-link):not(.login-link),
 [data-theme="dark"] li,
 [data-theme="dark"] td,
 [data-theme="dark"] th,
 [data-theme="dark"] label,
 [data-theme="dark"] input,
+[data-theme="dark"] select,
+[data-theme="dark"] option,
 [data-theme="dark"] textarea,
 [data-theme="dark"] .text-muted,
 [data-theme="dark"] .text-secondary,
@@ -1328,5 +1330,56 @@ textarea.form-control-custom {
         transform: none !important;
         animation: none !important;
     }
+}
+
+/* Prevent scrolling on login/signup pages for normal screen heights */
+@media (min-height: 650px) {
+    body.login-page-body,
+    body.signup-page-body {
+        overflow: hidden !important;
+        height: 100vh !important;
+    }
+}
+
+/* Auth Pages Link Styling: enforce color in both modes and disable hover effect */
+.signup-link,
+.login-link {
+    color: var(--secondary-color) !important;
+    transition: none !important;
+}
+
+.signup-link:hover,
+.login-link:hover {
+    text-decoration: none !important;
+    color: var(--secondary-color) !important;
+    opacity: 1 !important;
+}
+
+/* Spacing and position adjustments for auth pages on mobile screen sizes */
+@media (max-width: 767.98px) {
+    .auth-card {
+        margin-top: 50px !important;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .auth-toggles {
+        top: 12px !important;
+        right: 12px !important;
+    }
+}
+
+/* Ensure inputs, selects, and dropdown option lists are fully visible in Dark Mode */
+[data-theme="dark"] .form-control,
+[data-theme="dark"] .form-select,
+[data-theme="dark"] select,
+[data-theme="dark"] option {
+    background-color: #111111 !important;
+    color: #FFFFFF !important;
+    border-color: #333333 !important;
+}
+
+[data-theme="dark"] .form-control::placeholder {
+    color: rgba(255, 255, 255, 0.5) !important;
 }
 
